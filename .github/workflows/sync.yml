@@ -1,0 +1,22 @@
+# Pulls new and changed orders from Current RMS into the live app every 15 minutes
+# during working hours. Needs two things in the GitHub repo settings:
+#   Settings > Secrets and variables > Actions
+#     - Variable APP_URL   e.g. https://vmi-deliveries.up.railway.app
+#     - Secret   CRON_SECRET  the same value set in the app's environment
+name: Sync orders from Current RMS
+
+on:
+  schedule:
+    - cron: "*/15 5-20 * * 1-6"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    if: ${{ vars.APP_URL != '' }}
+    steps:
+      - name: Ask the app to sync
+        run: |
+          curl --fail --silent --show-error --max-time 300 \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ vars.APP_URL }}/api/cron/sync"

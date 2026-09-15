@@ -1,0 +1,28 @@
+# Render Blueprint: creates the web service, its persistent disk (for the SQLite
+# database) and the essential settings. In Render: New > Blueprint > pick this repo.
+services:
+  - type: web
+    name: vmi-deliveries
+    runtime: node
+    plan: starter
+    region: frankfurt
+    branch: claude/vmi-delivery-scheduler-pmq4t0
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    disk:
+      name: data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: DATABASE_URL
+        value: file:/data/vmi.db
+      - key: APP_SECRET
+        generateValue: true
+      - key: CRON_SECRET
+        generateValue: true
+      - key: APP_PASSWORD
+        sync: false

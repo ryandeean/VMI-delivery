@@ -10,7 +10,8 @@ function env(name: string, fallback = ""): string {
 }
 
 export const config = {
-  appUrl: () => env("APP_URL", "http://localhost:3000").replace(/\/$/, ""),
+  // Render sets RENDER_EXTERNAL_URL to the service address, so APP_URL is optional there.
+  appUrl: () => (env("APP_URL") || env("RENDER_EXTERNAL_URL") || "http://localhost:3000").replace(/\/$/, ""),
   appPassword: () => env("APP_PASSWORD"),
   appSecret: () => env("APP_SECRET", "dev-secret-not-for-production"),
   cronSecret: () => env("CRON_SECRET"),

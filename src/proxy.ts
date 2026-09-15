@@ -5,7 +5,7 @@ import { SESSION_COOKIE, loginRequired, verifySessionToken } from "@/lib/auth";
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   if (!loginRequired()) return NextResponse.next();
-  const open = pathname.startsWith("/login") || pathname.startsWith("/driver") || pathname.startsWith("/api/driver") || pathname.startsWith("/api/cron") || pathname.startsWith("/api/auth");
+  const open = pathname.startsWith("/login") || pathname.startsWith("/driver") || pathname.startsWith("/api/driver") || pathname.startsWith("/api/cron") || pathname.startsWith("/api/auth") || pathname === "/api/health";
   if (open) return NextResponse.next();
   const ok = await verifySessionToken(request.cookies.get(SESSION_COOKIE)?.value);
   if (ok) return NextResponse.next();

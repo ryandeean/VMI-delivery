@@ -96,18 +96,34 @@ Set `APP_PASSWORD` to require a shared team password for the office screens (dri
 
 ## Deploying
 
-The app is a standard Next.js server. Any host that runs Node 20+ with a persistent disk works out of the box with the SQLite database, for example Railway, Render, Fly.io, or a small VPS:
+### Render (recommended, about 10 minutes)
+
+The repo includes `render.yaml`, a Render Blueprint that creates the web service, a persistent disk for the database file, the health check and the essential settings.
+
+1. Sign up at render.com with your GitHub account.
+2. **New → Blueprint**, connect the `ryandeean/VMI-delivery` repository. Render reads `render.yaml` and shows what it will create.
+3. It asks for one value, `APP_PASSWORD`: type the team password. `APP_SECRET` and `CRON_SECRET` are generated for you.
+4. Press **Apply**. The first build takes a few minutes; the service is ready when the health check goes green.
+5. Open the service's address (shown at the top of its page) and log in. Migrations run automatically on every deploy, and the app uses the Render address for links in emails, so `APP_URL` does not need setting.
+6. Add the Current RMS, Google and email variables from `.env.example` under **Environment** as you get them. Each change redeploys.
+
+The disk needs the Starter plan (the free plan has no persistent storage and sleeps when idle). Pushes to the deployed branch redeploy automatically.
+
+Automatic order syncing is handled by the included GitHub Actions workflow (`.github/workflows/sync.yml`), which calls the app every 15 minutes during working hours. In the GitHub repo go to **Settings → Secrets and variables → Actions** and add a variable `APP_URL` (the Render address) and a secret `CRON_SECRET` (copy it from the service's Environment tab on Render). Scheduled workflows run from the repository's default branch.
+
+### Any other host
+
+The app is a standard Next.js server. Any host that runs Node 20+ with a persistent disk works with the SQLite database, for example Railway, Fly.io, or a small VPS:
 
 ```bash
-npm ci
+npm ci --include=dev
 npm run build
-npx prisma migrate deploy
-npm start          # listens on $PORT, default 3000
+npm start          # runs migrations, then listens on $PORT (default 3000)
 ```
 
-For Vercel or another serverless host, switch to Postgres: change `provider = "sqlite"` to `"postgresql"` in `prisma/schema.prisma`, point `DATABASE_URL` at your database (Neon, Supabase, Railway), delete `prisma/migrations` and run `npx prisma migrate dev --name init` once locally to regenerate the migration.
+For Vercel or another serverless host, switch to Postgres: change `provider = "sqlite"` to `"postgresql"` in `prisma/schema.prisma`, point `DATABASE_URL` at your database (Neon, Supabase, Render Postgres), delete `prisma/migrations` and run `npx prisma migrate dev --name init` once locally to regenerate the migration.
 
-Always set `APP_PASSWORD`, `APP_SECRET`, `APP_URL` and use HTTPS in production.
+Always set `APP_PASSWORD`, `APP_SECRET` and use HTTPS in production; set `APP_URL` on hosts other than Render.
 
 ## Project layout
 
