@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>It Couldn't Be Done</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #000; overflow: hidden; }
+  #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #0a0f15; }
+  #stage div { box-sizing: border-box; }
+  .full { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  #cam { transform-origin: 960px 540px; }
+  .shot { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; display: none; }
+  .grp { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 960px 540px; }
+  .t { position: absolute; white-space: nowrap; line-height: 1; font-kerning: normal; }
+  .t .w, .t .c, .t .sp { display: inline-block; }
+  .t .w { white-space: nowrap; }
+  .rule { position: absolute; left: 0; top: 0; }
+  svg.ov { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+  #hud { font-family: 'JetBrains Mono', monospace; font-size: 15px; letter-spacing: 0.28em; text-transform: uppercase; }
+  #hud .h { position: absolute; white-space: nowrap; }
+  #hud .corner { position: absolute; width: 22px; height: 22px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bg" class="full"></div>
+  <div id="bggrid" class="full"></div>
+  <div id="light" class="full"></div>
+  <div id="cam" class="full"><div id="layer" class="full"></div></div>
+  <div id="fx" class="full"></div>
+  <div id="vig" class="full"></div>
+  <div id="hud" class="full"></div>
+  <div id="flash" class="full"></div>
+</div>
+<script src="main.js"></script>
+</body>
+</html>
